@@ -21,7 +21,7 @@ var LinkedList = function() {
   };
 
   list.contains = function(target) {
-    function findTarget(node) {
+    var findTarget = function(node) {
       if (node.value === target) {
         return true;
       }
