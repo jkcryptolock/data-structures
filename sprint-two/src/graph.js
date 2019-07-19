@@ -10,8 +10,8 @@ var Graph = function() {
     return newGraph;
 };
 
-var Node = function(value) {
-    var newNode = Object.create(Node.prototype);
+var NodeGraph = function(value) {
+    var newNode = Object.create(NodeGraph.prototype);
 
     newNode.value = value;
     

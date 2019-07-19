@@ -1,15 +1,17 @@
+
+
 var LinkedList = function() {
   var list = {};
   list.head = null;
   list.tail = null;
 
   list.addToTail = function(value) {
-    var newNode = Node(value);
-    if (!list.head) {
+    var newNode = NodeList(value);
+    if (!list.head) { 
       list.head = newNode;
     }
-    if (list.tail) {
-      list.tail.next = newNode;
+    if (list.tail) { 
+      list.tail.next = newNode; 
     }
     list.tail = newNode;
   };
@@ -34,10 +36,10 @@ var LinkedList = function() {
   };
 
   return list;
-
+  
 };
 
-var Node = function(value) {
+var NodeList = function(value) {
   var node = {};
 
   node.value = value;
