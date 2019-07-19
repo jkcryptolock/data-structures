@@ -5,11 +5,11 @@ var LinkedList = function() {
 
   list.addToTail = function(value) {
     var newNode = Node(value);
-    if (!list.head) { 
+    if (!list.head) {
       list.head = newNode;
     }
-    if (list.tail) { 
-      list.tail.next = newNode; 
+    if (list.tail) {
+      list.tail.next = newNode;
     }
     list.tail = newNode;
   };
@@ -21,7 +21,7 @@ var LinkedList = function() {
   };
 
   list.contains = function(target) {
-    var findTarget = function(node) {
+    function findTarget(node) {
       if (node.value === target) {
         return true;
       }
@@ -34,7 +34,7 @@ var LinkedList = function() {
   };
 
   return list;
-  
+
 };
 
 var Node = function(value) {
