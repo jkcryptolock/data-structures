@@ -61,6 +61,9 @@ Graph.prototype.forEachNode = function(cb) {
 
 /*
  * Complexity: What is the time complexity of the above functions?
+
+ I believe these would fall under constant, as they are mostly simple value lookups. O(1).
+ 
  */
 
 
