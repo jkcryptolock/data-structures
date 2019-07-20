@@ -2,46 +2,101 @@
 
 var HashTable = function() {
   this._limit = 8;
+  this._size = 0;
   this._storage = LimitedArray(this._limit);
 };
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  if (this._storage[index] && this._storage[index][0][0] !== k) {
-    this._storage[index + 1] = [];
-    this._storage[index + 1].push([k, v]);
-  } else {
-    this._storage[index] = [];
-    this._storage[index].push([k, v]);
+  
+  var bucket = this._storage.get(index);
+  
+  if (!bucket) {
+    bucket = [];
+    this._storage.set(index, bucket);
+  }
+
+  var found = false;
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      tuple[1] = v;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    bucket.push([k, v]);
+    this._size++;
+    if (this._size > this._limit * 0.75) {
+      this._resize(this._limit * 2);
+    }
   }
 };
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  while (index <= this._limit) {
-    if (this._storage[index]) {
-      for (var i = 0; i < this._storage[index].length; i++) {
-        if (this._storage[index][i][0] === k) { return this._storage[index][i][1]; }
-      }
-    }
-    index++;
+  
+  var bucket = this._storage.get(index);
+
+  if (!bucket) {
+    return undefined;
   }
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      return tuple[1];
+    }
+  }
+
 };
 
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  for (var i = 0; i < this._storage[index].length; i++) {
-    if (this._storage[index][i][0] === k) {
-      this._storage[index][i].splice(i, 1);
+
+  var bucket = this._storage.get(index);
+
+  if (!bucket) {
+    return null;
+  }
+
+  for (var i = 0; i < bucket.length; i++) {
+    var tuple = bucket[i];
+    if (tuple[0] === k) {
+      bucket.splice(i, 1);
+      this._size--;
+      if (this._size < this._limit * 0.25) {
+        this._resize(this._limit / 2);
+      }
+      return tuple[1];
     }
   }
+  
+  return null;
 };
 
+HashTable.prototype._resize = function(newLimit) {
+
+  var oldStorage = this._storage;
+  this._limit = newLimit;
+  this._storage = LimitedArray(newLimit);
+  this._size = 0;
+
+  oldStorage.each(function(bucket) {
+    if (!bucket){ return ;}
+    for (var i = 0; i < bucket.length; i++) {
+      var tuple = bucket[i];
+      this.insert(tuple[0], tuple[1]);
+    }
+  }.bind(this));
+
+};
 /*
  * Complexity: What is the time complexity of the above functions?
  insert - Constant O(1)
- retrieve - Linear O(n)
- remove - Linear O(n)
+ retrieve - Linear O(1)
+ remove - Linear O(1)
  */
-
-
